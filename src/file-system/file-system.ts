@@ -167,8 +167,8 @@ export class FileSystem implements ReadOnlyFileSystem {
 		}
 
 		if (--found.mountCount <= 0) {
-			for (const packagesForFile of Object.values(this.fileIndex)) {
-				packagesForFile.filter(p => p != pkg)
+			for (const [file, packagesForFile] of Object.entries(this.fileIndex)) {
+				this.fileIndex[file] = packagesForFile.filter(p => p != pkg)
 			}
 
 			this.mountedPackages = this.mountedPackages.filter(i => i.pkg === pkg)
