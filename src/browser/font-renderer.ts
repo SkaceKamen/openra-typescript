@@ -45,7 +45,7 @@ export class FontRenderer {
 		const context = this.canvas.getContext('2d') as CanvasRenderingContext2D
 
 		context.textBaseline = 'top'
-		context.font = size + 'px Consolas'
+		context.font = size + 'px ' + this.font
 		context.fillText(c, 0, 0)
 
 		// We only care about the alpha values, discard the rest

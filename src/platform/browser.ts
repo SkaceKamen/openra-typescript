@@ -18,7 +18,7 @@ export class BrowserPlarform {
 		return new WebRenderingContext(this.canvas as HTMLCanvasElement)
 	}
 
-	createFont(name: string) {
+	createFont(name = 'Consolas') {
 		return new FontRenderer(name)
 	}
 }
