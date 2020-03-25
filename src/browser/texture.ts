@@ -87,8 +87,8 @@ export class Texture {
 		)
 	}
 
-	getData(): number[] {
-		const data = new Array(4 * (this.size.width * this.size.height))
+	getData() {
+		const data = new Uint8ClampedArray(4 * (this.size.width * this.size.height))
 
 		//  Query the active framebuffer so we can restore it afterwards
 		const lastFramebuffer = this.gl.getParameter(

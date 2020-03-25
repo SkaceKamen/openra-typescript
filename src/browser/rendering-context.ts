@@ -28,10 +28,12 @@ const modeFromPrimitiveType = {
 } as const
 
 export interface GameRenderingContext {
+	glVersion: string
+
 	createVertexBuffer(size: number): VertexBuffer
 	createTexture(): Texture
 	createFrameBuffer(s: Size, clearColor?: Color): FrameBuffer
-	createShader(name: string): Promise<Shader>
+	createShader(name: 'combined' | 'model'): Shader
 
 	enableScissor(x: number, y: number, width: number, height: number): void
 	disableScissor(): void
@@ -50,6 +52,8 @@ export interface GameRenderingContext {
 
 export class WebRenderingContext implements GameRenderingContext {
 	private gl: WebGL2RenderingContext
+
+	glVersion = '300 es'
 
 	constructor(canvas: HTMLCanvasElement) {
 		const gl = canvas.getContext('webgl2')
@@ -78,8 +82,8 @@ export class WebRenderingContext implements GameRenderingContext {
 		)
 	}
 
-	async createShader(name: string) {
-		return Shader.create(this.gl, name)
+	createShader(name: 'combined' | 'model') {
+		return new Shader(this.gl, name)
 	}
 
 	enableScissor(x: number, y: number, width: number, height: number): void {

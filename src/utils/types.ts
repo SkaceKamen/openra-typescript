@@ -1,9 +1,14 @@
-export class Size {
-	width: number
-	height: number
+export enum BlendMode {
+	None,
+	Alpha,
+	Additive,
+	Subtractive,
+	Multiply,
+	Multiplicative,
+	DoubleMultiplicative
+}
 
-	constructor(width: number, height: number) {
-		this.width = width
-		this.height = height
-	}
+export enum SheetType {
+	Indexed = 1,
+	BGRA = 4
 }

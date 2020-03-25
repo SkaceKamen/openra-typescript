@@ -65,6 +65,10 @@ export default (env: NODE_ENV) => {
 							: [MiniCssExtractPlugin.loader]),
 						'css-loader'
 					]
+				},
+				{
+					test: /\.(frag|vert)$/i,
+					use: 'raw-loader'
 				}
 			]
 		},

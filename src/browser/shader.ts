@@ -1,38 +1,28 @@
-import { RemoteFileSystem } from '../file-system/remote'
-import { ab2str } from '../utils/data'
 import { Texture } from './texture'
+
+const shaderCode = {
+	combined: {
+		vert: require('./shaders/combined.vert'),
+		frag: require('./shaders/combined.frag')
+	} as const,
+	model: {
+		vert: require('./shaders/model.vert'),
+		frag: require('./shaders/model.frag')
+	} as const
+} as const
 
 export class Shader {
 	static vertexPosAttributeIndex = 0
 	static texCoordAttributeIndex = 1
 	static texMetadataAttributeIndex = 2
 
-	static async create(gl: WebGL2RenderingContext, name: string) {
-		const vertexShader = await this.compileShaderObject(
-			gl,
-			gl.VERTEX_SHADER,
-			name
-		)
-
-		const fragmentShader = await this.compileShaderObject(
-			gl,
-			gl.FRAGMENT_SHADER,
-			name
-		)
-
-		return new Shader(gl, name, vertexShader, fragmentShader)
-	}
-
-	private static async compileShaderObject(
+	private static compileShaderObject(
 		gl: WebGL2RenderingContext,
 		type: number,
-		name: string
+		name: 'combined' | 'model'
 	) {
 		const ext = type == gl.VERTEX_SHADER ? 'vert' : 'frag'
-		const filename = 'glsl' + '/' + name + '.' + ext
-		let code = ab2str(RemoteFileSystem.read(filename))
-		const version = '300 es'
-		code = code.replace('{VERSION}', version)
+		const code = shaderCode[name][ext]
 		const shader = gl.createShader(type) as WebGLShader
 		gl.shaderSource(shader, code)
 		gl.compileShader(shader)
@@ -40,29 +30,28 @@ export class Shader {
 		const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS) as boolean
 
 		if (!success) {
-			throw new Error(`Compile error in shader object '${filename}'`)
+			throw new Error(`Compile error in shader object '${name}.${ext}'`)
 		}
 
 		return shader
 	}
 
 	gl: WebGL2RenderingContext
-
 	program: WebGLProgram
-
 	samplers: Record<string, number> = {}
-
 	textures: Record<number, WebGLTexture> = {}
-
 	unbindTextures: number[] = []
 
-	constructor(
-		gl: WebGL2RenderingContext,
-		name: string,
-		vertexShader: WebGLShader,
-		fragmentShader: WebGLShader
-	) {
+	constructor(gl: WebGL2RenderingContext, name: 'combined' | 'model') {
 		this.gl = gl
+
+		const vertexShader = Shader.compileShaderObject(gl, gl.VERTEX_SHADER, name)
+
+		const fragmentShader = Shader.compileShaderObject(
+			gl,
+			gl.FRAGMENT_SHADER,
+			name
+		)
 
 		//  Assemble program
 		this.program = this.gl.createProgram() as WebGLProgram

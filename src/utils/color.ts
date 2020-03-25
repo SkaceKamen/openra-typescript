@@ -1,4 +1,8 @@
 export class Color {
+	static fromArgb(a = 0, r = 0, g = 0, b = 0) {
+		return new Color(r, g, b, a)
+	}
+
 	r = 0
 	g = 0
 	b = 0

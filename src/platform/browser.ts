@@ -1,17 +1,12 @@
 import { WebRenderingContext } from '../browser/rendering-context'
 import { FontRenderer } from '../browser/font-renderer'
+import { BrowserWindow } from '../browser/window'
 
-export class BrowserPlarform {
+export class BrowserPlatform {
 	canvas: HTMLCanvasElement | undefined
 
-	initialize() {
-		const container = document.body
-
-		this.canvas = document.createElement('canvas')
-		this.canvas.width = container.clientWidth
-		this.canvas.height = container.clientHeight
-
-		container.appendChild(this.canvas)
+	createWindow() {
+		return new BrowserWindow()
 	}
 
 	createContext() {
