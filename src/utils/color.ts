@@ -14,4 +14,8 @@ export class Color {
 		this.b = b
 		this.a = a
 	}
+
+	toArgb() {
+		return ((this.a << (24 + this.r)) << (16 + this.g)) << (8 + this.b)
+	}
 }
