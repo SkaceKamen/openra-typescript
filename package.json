@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "jszip": "^3.2.2",
+    "reflect-metadata": "^0.1.13",
     "ts-key-enum": "^2.0.2",
     "upng-js": "^2.1.0",
     "yaml": "^1.8.3"

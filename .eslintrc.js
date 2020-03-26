@@ -12,11 +12,6 @@ module.exports = {
     rules: {
         indent: 'off',
         curly: ['warn', 'all'],
-        'padding-line-between-statements': [
-            'warn',
-            { blankLine: "always", prev: "*", next: ["block-like", "multiline-expression", "multiline-const", "return"] },
-            { blankLine: "always", prev: ["block-like", "multiline-expression", "multiline-const"], next: "*" }
-        ],
         'react/prop-types': 'off',
         '@typescript-eslint/indent': 'off',
         '@typescript-eslint/no-use-before-define': 'off',

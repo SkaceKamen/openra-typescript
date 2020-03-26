@@ -1,3 +1,5 @@
+import 'reflect-metadata'
+
 import { Game } from './game'
 import { RemoteFileSystem } from './file-system/remote'
 

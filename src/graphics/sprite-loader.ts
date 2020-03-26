@@ -12,10 +12,7 @@ export enum SpriteFrameType {
 }
 
 export interface SpriteLoader {
-	tryParseSprite(
-		s: DataStream,
-		/* out */ metadata?: TypeDictionary
-	): SpriteFrame[] | null
+	tryParseSprite(s: DataStream): SpriteFrame[] | null
 }
 
 export interface SpriteFrame {
@@ -43,7 +40,6 @@ export class SpriteCache {
 	fileSystem: ReadOnlyFileSystem
 	sprites: Record<string, Sprite[][]> = {}
 	unloadedFrames: Record<string, (SpriteFrame | null)[]> = {}
-	metadata: Record<string, TypeDictionary> = {}
 
 	constructor(fileSystem: ReadOnlyFileSystem, loaders: SpriteLoader[]) {
 		this.sheetBuilders = {
@@ -81,17 +77,14 @@ export class SpriteCache {
 		//  Load all of the frames into the unused buffer and initialize
 		//  the loaded cache (initially empty)
 		if (sprite) {
-			const fileMetadata: TypeDictionary = null
-
 			unloaded = await FrameLoader.getFramesFromFile(
 				this.fileSystem,
 				filename,
-				this.loaders,
-				/* out */ fileMetadata
+				this.loaders
 			)
 
 			this.unloadedFrames[filename] = unloaded
-			this.metadata[filename] = fileMetadata
+
 			sprite = new Array(unloaded.length)
 			allSprites.push(sprite)
 		}
@@ -120,41 +113,13 @@ export class SpriteCache {
 
 		return sprite
 	}
-
-	///  <summary>
-	///  Returns a TypeDictionary containing any metadata defined by the frame
-	///  or null if the frame does not define metadata.
-	///  </summary>
-	async frameMetadata(filename: string): TypeDictionary {
-		let fileMetadata: TypeDictionary
-
-		if (!this.metadata.tryGetValue(filename, /* out */ fileMetadata)) {
-			await FrameLoader.getFramesFromFile(
-				this.fileSystem,
-				filename,
-				this.loaders,
-				/* out */ fileMetadata
-			)
-
-			this.metadata[filename] = fileMetadata
-		}
-
-		return fileMetadata
-	}
 }
 export class FrameCache {
 	frames: AsyncRecordCache<string, SpriteFrame[]>
 
 	constructor(fileSystem: ReadOnlyFileSystem, loaders: SpriteLoader[]) {
-		let metadata: TypeDictionary
-
 		this.frames = new AsyncRecordCache(filename =>
-			FrameLoader.getFramesFromFile(
-				fileSystem,
-				filename,
-				loaders,
-				/* out */ metadata
-			)
+			FrameLoader.getFramesFromFile(fileSystem, filename, loaders)
 		)
 	}
 
@@ -167,16 +132,11 @@ export class FrameLoader {
 	static async getFramesFromFile(
 		fileSystem: ReadOnlyFileSystem,
 		filename: string,
-		loaders: SpriteLoader[],
-		/* out */ metadata: TypeDictionary
+		loaders: SpriteLoader[]
 	) {
 		const stream = await fileSystem.open(filename)
 
-		const spriteFrames = FrameLoader.getFramesFromStream(
-			stream,
-			loaders,
-			/* out */ metadata
-		)
+		const spriteFrames = FrameLoader.getFramesFromStream(stream, loaders)
 
 		if (spriteFrames == null) {
 			throw new Error(filename + ' is not a valid sprite file!')
@@ -187,11 +147,8 @@ export class FrameLoader {
 
 	static getFramesFromStream(
 		stream: DataStream,
-		loaders: SpriteLoader[],
-		/* out */ metadata: TypeDictionary
+		loaders: SpriteLoader[]
 	): SpriteFrame[] | null {
-		metadata = null
-
 		for (const loader of loaders) {
 			const frames = loader.tryParseSprite(stream)
 

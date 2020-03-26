@@ -9,3 +9,6 @@ export const endsWith = (str: string, ending: string, ignoreCase = true) =>
 		ignoreCase ? ending.toLowerCase() : ending
 	) ===
 	str.length - ending.length
+
+export const isNullOrWhiteSpace = (str: string | null) =>
+	str === null || str.match(/^\s+$/)
