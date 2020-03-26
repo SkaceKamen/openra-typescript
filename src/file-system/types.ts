@@ -1,6 +1,8 @@
+import { DataStream } from '../utils/stream'
+
 export interface PackageLoader {
 	tryParsePackage(
-		s: DataView,
+		s: DataStream,
 		filename: string,
 		context: ReadOnlyFileSystem
 	): Promise<ReadOnlyPackage | null>
@@ -11,7 +13,7 @@ export interface ReadOnlyPackage {
 
 	contents: string[]
 
-	getStream(filename: string): Promise<DataView | null>
+	getStream(filename: string): Promise<DataStream | null>
 
 	contains(filename: string): boolean
 
@@ -22,18 +24,18 @@ export interface ReadOnlyPackage {
 }
 
 export interface ReadWritePackage extends ReadOnlyPackage {
-	update(filename: string, contents: ArrayBuffer): Promise<void>
+	update(filename: string, contents: DataStream): Promise<void>
 	delete(filename: string): Promise<void>
 }
 
 export interface ReadWritePackage extends ReadOnlyPackage {
-	update(filename: string, contents: ArrayBuffer): void
+	update(filename: string, contents: DataStream): void
 
 	delete(filename: string): void
 }
 
 export interface ReadOnlyFileSystem {
-	open(filename: string): Promise<DataView>
+	open(filename: string): Promise<DataStream>
 
 	tryGetPackageContaining(
 		path: string
@@ -42,7 +44,7 @@ export interface ReadOnlyFileSystem {
 		filename: string
 	} | null
 
-	tryOpen(filename: string): Promise<DataView | null>
+	tryOpen(filename: string): Promise<DataStream | null>
 
 	exists(filename: string): boolean
 

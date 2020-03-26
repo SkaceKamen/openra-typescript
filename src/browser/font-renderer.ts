@@ -1,5 +1,4 @@
-import { Size } from '../utils/types'
-import { Vector2 } from '../utils/math'
+import { Vector2, Size } from '../utils/math'
 
 export interface FontGlyph {
 	offset: Vector2

@@ -1,9 +1,9 @@
 import { VertexBuffer } from './vertex-buffer'
 import { Texture } from './texture'
-import { Size } from '../utils/types'
 import { FrameBuffer } from './frame-buffer'
 import { Color } from '../utils/color'
 import { Shader } from './shader'
+import { Size } from '../utils/math'
 
 export enum PrimitiveType {
 	PointList,

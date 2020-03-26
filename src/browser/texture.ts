@@ -1,5 +1,4 @@
-import { Size } from '../utils/types'
-import { isPowerOf2 } from '../utils/math'
+import { isPowerOf2, Size } from '../utils/math'
 
 export enum TextureScaleFilter {
 	Nearest,
@@ -21,7 +20,7 @@ export class Texture {
 		this.prepareTexture()
 	}
 
-	size: Size = { width: 0, height: 0 }
+	size: Size = new Size(0, 0)
 	gl: WebGL2RenderingContext
 
 	constructor(gl: WebGL2RenderingContext) {

@@ -64,7 +64,7 @@ export class Renderer {
 
 	lastWorldBufferSize: Size = new Size(-1, -1)
 
-	lastWorldViewport: Rectangle = Rectangle.Empty
+	lastWorldViewport: Rectangle = Rectangle.empty
 
 	currentPaletteTexture: Texture
 

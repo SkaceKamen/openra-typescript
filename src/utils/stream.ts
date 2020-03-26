@@ -7,8 +7,12 @@ export class DataStream {
 		return this.view.buffer
 	}
 
-	constructor(view: DataView) {
-		this.view = view
+	constructor(view: DataView | ArrayBuffer) {
+		if (view instanceof DataView) {
+			this.view = view
+		} else {
+			this.view = new DataView(view)
+		}
 	}
 
 	seek(offset: number) {

@@ -6,6 +6,8 @@ import { Game } from '../game'
 import { Logger } from '../log'
 import { SheetType } from '../utils/types'
 import { Util } from './utils'
+import { Palette } from './palette'
+import { Color } from '../utils/color'
 
 export class Sheet {
 	dirty = false
@@ -96,7 +98,7 @@ export class Sheet {
 			}
 
 			return PNG.encode([data.buffer], this.size.width, this.size.height, 0)
-		} else {
+		} else if (pal !== undefined) {
 			const d = this.getData()
 			const plane = new Uint8ClampedArray(this.size.width * this.size.height)
 			const dataStride = 4 * this.size.width
@@ -109,17 +111,19 @@ export class Sheet {
 				}
 			}
 
-			/*
-			TODO:
 			const palColors: Color[] = []
+
 			for (let i = 0; i < Palette.size; i++) {
-				palColors[i] = pal.GetColor(i)
+				palColors[i] = pal.getColor(i)
 			}
-			*/
 
 			Logger.warn('Trying to convert sheet to png with unsupported palette')
 
 			return PNG.encode([plane.buffer], this.size.width, this.size.height, 0)
+		} else {
+			throw new Error(
+				`Sheet.asPng requires nothing or channel and pal as arguments`
+			)
 		}
 	}
 

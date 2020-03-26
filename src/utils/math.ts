@@ -12,7 +12,7 @@ export const nextPowerOf2 = (v: number) => {
 }
 
 export class Rectangle {
-	static Empty = new Rectangle(0, 0, 0, 0)
+	static empty = new Rectangle(0, 0, 0, 0)
 
 	static fromLTRB(left: number, top: number, right: number, bottom: number) {
 		return new Rectangle(left, top, right, bottom)
@@ -24,7 +24,7 @@ export class Rectangle {
 
 	static intersect(a: Rectangle, b: Rectangle) {
 		if (!a.intersectsWithInclusive(b)) {
-			return Rectangle.Empty
+			return Rectangle.empty
 		}
 
 		return Rectangle.fromLTRB(
@@ -100,10 +100,18 @@ export class Vector2 {
 		this.x = x
 		this.y = y
 	}
+
+	add(v: Vector2) {
+		return new Vector2(this.x + v.x, this.y + v.y)
+	}
 }
 
 export class Vector3 {
 	static zero = new Vector3()
+
+	static from(v: Vector2) {
+		return new Vector3(v.x, v.y, 0)
+	}
 
 	x: number
 	y: number

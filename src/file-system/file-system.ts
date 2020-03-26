@@ -4,6 +4,7 @@ import { ZipFileLoader } from './zip-file'
 import { Manifest } from '../manifest'
 import { Folder } from './folder'
 import { RemoteFileSystem } from './remote'
+import { DataStream } from '../utils/stream'
 
 export class FileSystem implements ReadOnlyFileSystem {
 	mountedPackages: {
@@ -34,7 +35,7 @@ export class FileSystem implements ReadOnlyFileSystem {
 		this.packageLoaders = [...packageLoaders, new ZipFileLoader()]
 	}
 
-	async tryParsePackage(stream: DataView, filename: string) {
+	async tryParsePackage(stream: DataStream, filename: string) {
 		for (const packageLoader of this.packageLoaders) {
 			const pkg = await packageLoader.tryParsePackage(stream, filename, this)
 
@@ -214,7 +215,7 @@ export class FileSystem implements ReadOnlyFileSystem {
 	}
 
 	async open(filename: string) {
-		let s: DataView | null
+		let s: DataStream | null
 
 		if (!(s = await this.tryOpen(filename))) {
 			throw new Error(`File not found: ${filename}`)

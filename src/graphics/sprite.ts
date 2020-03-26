@@ -59,16 +59,16 @@ export class Sprite {
 				: new Vector3(offset.x / this.size.x, offset.y / this.size.y, 0)
 
 		this.left =
-			Math.min(bounds.left, bounds.right) * (sheet.DPIScale / sheet.Size.Width)
+			Math.min(bounds.left, bounds.right) * (sheet.DPIScale / sheet.size.width)
 
 		this.top =
-			Math.min(bounds.top, bounds.bottom) * (sheet.DPIScale / sheet.Size.Height)
+			Math.min(bounds.top, bounds.bottom) * (sheet.DPIScale / sheet.size.height)
 
 		this.right =
-			Math.max(bounds.left, bounds.right) * (sheet.DPIScale / sheet.Size.Width)
+			Math.max(bounds.left, bounds.right) * (sheet.DPIScale / sheet.size.width)
 
 		this.bottom =
-			Math.max(bounds.top, bounds.bottom) * (sheet.DPIScale / sheet.Size.Height)
+			Math.max(bounds.top, bounds.bottom) * (sheet.DPIScale / sheet.size.height)
 	}
 }
 

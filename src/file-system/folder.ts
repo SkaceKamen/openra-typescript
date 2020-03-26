@@ -3,6 +3,7 @@ import { RemoteFile } from './file'
 import { Platform } from '../platform'
 import { FileSystem } from './file-system'
 import { RemoteFileSystem } from './remote'
+import { DataStream } from '../utils/stream'
 
 export class Folder implements ReadOnlyPackage {
 	name: string
@@ -22,7 +23,7 @@ export class Folder implements ReadOnlyPackage {
 
 	async getStream(filename: string) {
 		try {
-			return new DataView(await RemoteFile.read(this.path + '/' + filename))
+			return new DataStream(await RemoteFile.read(this.path + '/' + filename))
 		} catch (e) {
 			return null
 		}

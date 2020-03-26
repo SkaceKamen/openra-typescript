@@ -1,7 +1,6 @@
 import { Texture } from './texture'
-import { Size } from '../utils/types'
 import { Color } from '../utils/color'
-import { isPowerOf2, Rectangle } from '../utils/math'
+import { isPowerOf2, Rectangle, Size } from '../utils/math'
 
 export class FrameBuffer {
 	texture: Texture

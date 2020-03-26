@@ -1,11 +1,11 @@
-import { ReadOnlyPackage, PackageLoader, ReadWritePackage } from './types'
+import { ReadOnlyPackage, PackageLoader } from './types'
 import JSZip from 'jszip'
 import { FileSystem } from './file-system'
-import { RemoteFile } from './file'
 import { endsWith } from '../utils/string'
+import { DataStream } from '../utils/stream'
 
 class ReadOnlyZipFile implements ReadOnlyPackage {
-	static async create(s: DataView | null, filename: string) {
+	static async create(s: DataStream | null, filename: string) {
 		return new ReadOnlyZipFile(
 			s ? await JSZip.loadAsync(s.buffer) : new JSZip(),
 			filename
@@ -28,7 +28,7 @@ class ReadOnlyZipFile implements ReadOnlyPackage {
 			return null
 		}
 
-		return new DataView(await entry.async('arraybuffer'))
+		return new DataStream(await entry.async('arraybuffer'))
 	}
 
 	get contents(): string[] {
@@ -146,7 +146,7 @@ class ZipFolder implements ReadOnlyPackage {
 export class ZipFileLoader implements PackageLoader {
 	static extensions = ['.zip', '.oramap']
 
-	async tryParsePackage(s: DataView, filename: string) {
+	async tryParsePackage(s: DataStream, filename: string) {
 		if (!ZipFileLoader.extensions.find(e => endsWith(filename, e))) {
 			return null
 		}
