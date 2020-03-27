@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const isPowerOf2 = (x: number) => Math.log2(x) % 1 === 0
 
 export const nextPowerOf2 = (v: number) => {
@@ -104,6 +105,22 @@ export class Vector2 {
 	add(v: Vector2) {
 		return new Vector2(this.x + v.x, this.y + v.y)
 	}
+
+	minus(v: Vector3) {
+		return new Vector2(this.x - v.x, this.y - v.y)
+	}
+
+	multiply(m: number) {
+		return new Vector2(this.x * m, this.y * m)
+	}
+
+	clamp(r: Rectangle) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		return new (this as any).constructor(
+			Math.min(r.right, Math.max(this.x, r.left)),
+			Math.min(r.bottom, Math.max(this.y, r.top))
+		)
+	}
 }
 
 export class Vector3 {
@@ -123,8 +140,54 @@ export class Vector3 {
 		this.z = z
 	}
 
-	div(b: Vector3) {
-		return new Vector3(this.x / b.x, this.y / b.y, this.z / b.z)
+	add(b: Vector3): this {
+		return new (this.constructor as any)(
+			this.x + b.x,
+			this.y + b.y,
+			this.z + b.z
+		)
+	}
+
+	sub(b: Vector3): this {
+		return new (this.constructor as any)(
+			this.x - b.x,
+			this.y - b.y,
+			this.z - b.z
+		)
+	}
+
+	inv(): this {
+		return new (this.constructor as any)(-this.x, -this.y, -this.z)
+	}
+
+	mul(b: number | Vector3): this {
+		if (b instanceof Vector3) {
+			return new (this.constructor as any)(
+				this.x * b.x,
+				this.y * b.y,
+				this.z * b.z
+			)
+		}
+		return new (this.constructor as any)(this.x * b, this.y * b, this.z * b)
+	}
+
+	div(b: number | Vector3): this {
+		if (b instanceof Vector3) {
+			return new (this.constructor as any)(
+				this.x / b.x,
+				this.y / b.y,
+				this.z / b.z
+			)
+		}
+		return new (this.constructor as any)(this.x / b, this.y / b, this.z / b)
+	}
+
+	get lengthSquared(): number {
+		return this.x * this.x + this.y * this.y + this.z * this.z
+	}
+
+	get length(): number {
+		return Math.sqrt(this.lengthSquared)
 	}
 }
 
@@ -139,5 +202,19 @@ export class Size {
 
 	nextPowerOf2() {
 		return new Size(nextPowerOf2(this.width), nextPowerOf2(this.height))
+	}
+}
+
+export class Quaternion {
+	x: number
+	y: number
+	z: number
+	w: number
+
+	constructor(x: number, y: number, z: number, w: number) {
+		this.x = x
+		this.y = y
+		this.z = z
+		this.w = w
 	}
 }

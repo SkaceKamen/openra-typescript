@@ -5,6 +5,12 @@ import { Color } from './utils/color'
 import { Game } from './game'
 import { Size, Vector2, Vector3, Rectangle } from './utils/math'
 import { BitSet } from './utils/bit-set'
+import { CPos } from './c-pos'
+import { WDist } from './w-dist'
+import { WPos } from './w-pos'
+import { WAngle } from './w-angle'
+import { WRot } from './w-rot'
+import { WVec } from './w-vec'
 
 const SERIALIZE_ATTRIBUTE = 'SERIALIZE_ATTRIBUTE'
 const META_TYPE = 'design:type'
@@ -229,7 +235,7 @@ export class FieldLoader {
 
 			return value
 		} else if (fieldType.type === 'Color') {
-			let color: Color
+			let color: Color | null
 
 			if (value && (color = Color.tryParse(value))) {
 				return color
@@ -237,7 +243,7 @@ export class FieldLoader {
 
 			return this.invalidValueAction(value, fieldType, fieldName)
 		} else if (fieldType.type === 'Hotkey') {
-			let res: Hotkey
+			let res: Hotkey | null
 
 			if ((res = Hotkey.tryParse(value))) {
 				return res
@@ -247,7 +253,7 @@ export class FieldLoader {
 		} else if (fieldType.type === 'HotkeyReference') {
 			return Game.modData.hotkeys[value]
 		} else if (fieldType.type === 'WDist') {
-			let res: WDist
+			let res: WDist | null
 
 			if ((res = WDist.tryParse(value))) {
 				return res
@@ -259,16 +265,16 @@ export class FieldLoader {
 				const parts = value.split(',')
 
 				if (parts.length == 3) {
-					let rz: WDist
-					let rx: WDist
-					let ry: WDist
+					let rz: WDist | null
+					let rx: WDist | null
+					let ry: WDist | null
 
 					if (
 						(rx = WDist.tryParse(parts[0])) &&
 						(ry = WDist.tryParse(parts[1])) &&
 						(rz = WDist.tryParse(parts[2]))
 					) {
-						return new WVec(rx, ry, rz)
+						return WVec.fromDists(rx, ry, rz)
 					}
 				}
 			}
@@ -285,16 +291,16 @@ export class FieldLoader {
 				const vecs = new Array(parts.length / 3)
 
 				for (let i = 0; i < vecs.length; i++) {
-					let rz: WDist
-					let rx: WDist
-					let ry: WDist
+					let rz: WDist | null
+					let rx: WDist | null
+					let ry: WDist | null
 
 					if (
 						(rx = WDist.tryParse(parts[3 * i])) &&
 						(ry = WDist.tryParse(parts[3 * i + 1])) &&
 						(rz = WDist.tryParse(parts[3 * i + 2]))
 					) {
-						vecs[i] = new WVec(rx, ry, rz)
+						vecs[i] = WVec.fromDists(rx, ry, rz)
 					}
 				}
 
@@ -306,17 +312,17 @@ export class FieldLoader {
 			if (value && typeof value === 'string') {
 				const parts = value.split(',')
 
-				if (parts.Length == 3) {
-					let rz: WDist
-					let rx: WDist
-					let ry: WDist
+				if (parts.length == 3) {
+					let rz: WDist | null
+					let rx: WDist | null
+					let ry: WDist | null
 
 					if (
 						(rx = WDist.tryParse(parts[0])) &&
 						(ry = WDist.tryParse(parts[1])) &&
 						(rz = WDist.tryParse(parts[2]))
 					) {
-						return new WPos(rx, ry, rz)
+						return WPos.fromDists(rx, ry, rz)
 					}
 				}
 			}
@@ -349,22 +355,22 @@ export class FieldLoader {
 				if (value && typeof value === 'string') {
 					const parts = value.split(',').filter(v => v.length > 0)
 
-					return new CPos(parseInt(parts[0]), parseInt(parts[1]))
+					return CPos.from(parseInt(parts[0]), parseInt(parts[1]))
 				}
 			} catch (e) {}
 
 			return this.invalidValueAction(value, fieldType, fieldName)
-		} else if (fieldType.type === 'CVec') {
+		} else if (fieldType.type === 'Vector2') {
 			try {
 				if (value && typeof value === 'string') {
 					const parts = value.split(',').filter(v => v.length > 0)
 
-					return new CVec(parseInt(parts[0], 10), parseInt(parts[1], 10))
+					return new Vector2(parseInt(parts[0], 10), parseInt(parts[1], 10))
 				}
 			} catch (e) {}
 
 			return this.invalidValueAction(value, fieldType, fieldName)
-		} else if (fieldType.type === 'CVec[]') {
+		} else if (fieldType.type === 'Vector2[]') {
 			try {
 				if (value) {
 					const parts = value.split(',')
@@ -376,7 +382,7 @@ export class FieldLoader {
 					const vecs = new Array(parts.length / 2)
 
 					for (let i = 0; i < vecs.length; i++) {
-						vecs[i] = new CVec(
+						vecs[i] = new Vector2(
 							parseInt(parts[2 * i], 10),
 							parseInt(parts[2 * i + 1], 10)
 						)
@@ -567,22 +573,14 @@ export class FieldLoader {
 
 			return this.invalidValueAction(value, fieldType, fieldName)
 		} else if (fieldType.type === 'DateTime') {
-			let dt: DateTime
+			// TODO: Format: 'yyyy-MM-dd HH-mm-ss'
+			const dt: Date = new Date(value)
+			return dt
 
-			if (
-				DateTime.tryParseExact(
-					value,
-					'yyyy-MM-dd HH-mm-ss',
-					CultureInfo.InvariantCulture,
-					DateTimeStyles.AssumeUniversal,
-					/* out */ dt
-				)
-			) {
-				return dt
-			}
-
-			return this.invalidValueAction(value, fieldType, fieldName)
+			// return this.invalidValueAction(value, fieldType, fieldName)
 		} else {
+			// TODO:
+			/*
 			const conv = TypeDescriptor.GetConverter(fieldType)
 
 			if (conv.canConvertFrom('string')) {
@@ -592,6 +590,7 @@ export class FieldLoader {
 					return this.invalidValueAction(value, fieldType, fieldName)
 				}
 			}
+			*/
 		}
 
 		this.unknownFieldAction(`[Type] ${value}`, fieldType)
