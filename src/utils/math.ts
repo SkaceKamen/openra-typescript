@@ -106,11 +106,11 @@ export class Vector2 {
 		return new Vector2(this.x + v.x, this.y + v.y)
 	}
 
-	minus(v: Vector3) {
+	sub(v: Vector3) {
 		return new Vector2(this.x - v.x, this.y - v.y)
 	}
 
-	multiply(m: number) {
+	mul(m: number) {
 		return new Vector2(this.x * m, this.y * m)
 	}
 

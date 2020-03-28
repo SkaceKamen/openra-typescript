@@ -11,6 +11,7 @@ import { WPos } from './w-pos'
 import { WAngle } from './w-angle'
 import { WRot } from './w-rot'
 import { WVec } from './w-vec'
+import { Hotkey } from './input/hotkey'
 
 const SERIALIZE_ATTRIBUTE = 'SERIALIZE_ATTRIBUTE'
 const META_TYPE = 'design:type'

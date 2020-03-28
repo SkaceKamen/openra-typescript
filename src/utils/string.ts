@@ -12,3 +12,6 @@ export const endsWith = (str: string, ending: string, ignoreCase = true) =>
 
 export const isNullOrWhiteSpace = (str: string | null) =>
 	str === null || str.match(/^\s+$/)
+
+export const ucFirst = (str: string) =>
+	str.substr(0, 1).toUpperCase() + str.substr(1)
