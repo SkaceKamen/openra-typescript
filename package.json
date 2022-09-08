@@ -51,7 +51,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "reflect-metadata": "^0.1.13",
     "ts-key-enum": "^2.0.2",
     "upng-js": "^2.1.0",
